@@ -49,6 +49,7 @@ type Statement struct {
 	checkVersion  bool
 	boolColumnMap map[string]bool
 	inColumns     map[string]*inParam
+	incColumns    map[string]interface{}
 }
 
 // init
@@ -462,6 +463,17 @@ func (statement *Statement) Id(id interface{}) *Statement {
 	return statement
 }
 
+// Generate  "Update ... Set column = column + arg" statment
+func (statement *Statement) Inc(column string, arg interface{}) *Statement {
+	k := strings.ToLower(column)
+	statement.incColumns[k] = arg
+	return statement
+}
+
+// Generate  "Update ... Set column = column + arg" statment
+func (statement *Statement) getInc() map[string]interface{} {
+	return statement.incColumns
+}
 // Generate "Where column IN (?) " statment
 func (statement *Statement) In(column string, args ...interface{}) *Statement {
 	k := strings.ToLower(column)
